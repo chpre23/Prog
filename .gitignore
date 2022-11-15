@@ -1,0 +1,9 @@
+# Exclure absolument tout les fichiers/dossiers
+*
+# Parmis les fichiers/dossiers exclus, autoriser les suivants:
+!/.gitignore
+!/README.md
+!/quoridor.py
+!/main.py
+!/api.py
+!/tests.py
