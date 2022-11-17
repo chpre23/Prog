@@ -9,11 +9,10 @@ Functions:
     * récupérer_partie - Retrouver l'état d'une partie spécifique.
     * jouer_coup - Exécute un coup et retourne le nouvel état de jeu.
 """
-
 import requests
 
-URL = "https://pax.ulaval.ca/quoridor/api/v2/"
 
+URL = "https://pax.ulaval.ca/quoridor/api/v2/"
 
 def lister_parties(idul, secret):
     """Lister les parties
@@ -31,8 +30,21 @@ def lister_parties(idul, secret):
         list: Liste des parties reçues du serveur,
              après avoir décodé le json de sa réponse.
     """
-    pass
+    site = requests.get(URL+'parties', auth=(idul, secret))
 
+    if site.status_code == 200:
+        site=site.json()
+        return site['parties']
+
+    if site.status_code == 401:
+        site=site.json()
+        raise PermissionError(site['message'])
+
+    if site.status_code == 406:
+        site=site.json()
+        raise RuntimeError(site['message'])
+
+    raise ConnectionError()
 
 def débuter_partie(idul, secret):
     """Débuter une partie
@@ -51,8 +63,21 @@ def débuter_partie(idul, secret):
             et de l'état courant du jeu, après avoir décodé
             le JSON de sa réponse.
     """
-    pass
+    site = requests.post(URL+'partie', auth=(idul, secret))
 
+    if site.status_code == 200:
+        site=site.json()
+        return (site['id'], site['état'])
+
+    if site.status_code == 401:
+        site=site.json()
+        raise PermissionError(site['message'])
+    
+    if site.status_code == 406:
+        site=site.json()
+        raise RuntimeError(site['message'])
+    
+    raise ConnectionError()
 
 def récupérer_partie(id_partie, idul, secret):
     """Récupérer une partie
@@ -72,10 +97,24 @@ def récupérer_partie(id_partie, idul, secret):
             et de l'état courant du jeu, après avoir décodé
             le JSON de sa réponse.
     """
-    pass
+    site = requests.get(URL+id_partie, auth=(idul, secret))
 
+    if site.status_code == 200:
+        site=site.json()
+        return (site['id'], site['état'], site['gagnant'])
+    
+    if site.status_code == 401:
+        site=site.json()
+        raise PermissionError(site['message'])
+    
+    if site.status_code == 406:
+        site=site.json()
+        raise RuntimeError(site['message'])
+    
+    raise ConnectionError()
 
 def jouer_coup(id_partie, type_coup, position, idul, secret):
+
     """Jouer un coup
 
     Args:
@@ -99,4 +138,21 @@ def jouer_coup(id_partie, type_coup, position, idul, secret):
             et de l'état courant du jeu, après avoir décodé
             le JSON de sa réponse.
     """
-    pass
+    site = requests.put(URL+'jouer', auth=(idul, secret), json={
+        'id': id_partie, 'type': type_coup, 'pos': position})
+
+    if site.status_code == 200:
+        site=site.json()
+        if site['gagnant'] is not None:
+            raise StopIteration(site['gagnant'])
+        return (site['id'], site['état'])
+        
+    if site.status_code == 401:
+        site=site.json()
+        raise PermissionError(site['message'])
+
+    if site.status_code == 406:
+        site=site.json()
+        raise RuntimeError(site['message'])
+
+    raise ConnectionError()

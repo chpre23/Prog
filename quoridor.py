@@ -19,16 +19,13 @@ def analyser_commande():
                    Cette objet aura l'attribut «idul» représentant l'idul du joueur
                    et l'attribut «parties» qui est un booléen True/False.
     """
-    parser = argparse.ArgumentParser()
-
-    parser = argparse.ArgumentParser(
-                    description = 'Quoridor')
+    parser = argparse.ArgumentParser(description = 'Quoridor')
 
     parser.add_argument('idul', help = 'IDUL du joueur')
-    parser.add_argument('-p', '--parties', action='store_true', help = "Lister les parties existantes")
+    parser.add_argument('-p', '--parties', action='store_true',
+                        help = "Lister les parties existantes")
 
     return parser.parse_args()
-
 
 def formater_légende(joueurs):
     
@@ -42,8 +39,6 @@ def formater_légende(joueurs):
     """
     nom1 = joueurs[0].get('nom') + ','
     nom2 = joueurs[1].get('nom') + ','
-    #print(nom1)
-    #print(nom2)
 
     lon = max(len(nom1), len(nom2))
 
@@ -59,7 +54,6 @@ def formater_légende(joueurs):
     chaine = 'Légende:' + '\n' + l1 + '\n' + l2 + '\n'
     return chaine
 
-
 def formater_damier(joueurs, murs):
     """Formater la représentation graphique du damier.
 
@@ -73,13 +67,16 @@ def formater_damier(joueurs, murs):
     # Initialisation du damier vide
     ld = '   ' + ('-' * 35)
     lf = '--|' + ('-' * 35)
-    ll = ' '.join([' ', '|', '1', ' ', '2', ' ', '3', ' ', '4', ' ', '5', ' ', '6', ' ', '7', ' ', '8', ' ', '9'])
-    lvide = ' '.join([' ', '|', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '|'])
+    ll = ' '.join([' ', '|', '1', ' ', '2', ' ', '3', ' ', '4', ' ', '5',
+                    ' ', '6', ' ', '7', ' ', '8', ' ', '9'])
+    lvide = ' '.join([' ', '|', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+                    ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '|'])
     ls = []
     chaine = ''
 
     for i in range(9):
-        ls.append(' '.join([str(i+1),'|', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', '|']))
+        ls.append(' '.join([str(i+1),'|', '.', ' ', '.', ' ', '.', ' ', '.',
+                            ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', '|']))
 
     damier = [ld]
     for element in reversed(ls):
@@ -110,22 +107,21 @@ def formater_damier(joueurs, murs):
     # Traitement des murs verticaux
     if len(murs.get('verticaux')) > 0:
         for i in murs.get('verticaux'):
-            temp2 = []
+            temp = []
             ind_list = [20 - (i[1] * 2) - 1, 20 - (i[1] * 2) - 2, 20 - (i[1] * 2) - 3]
 
-            for j in ind_list:
-                temp2.append(list(damier[j]))
+            for idx in ind_list:
+                temp.append(list(damier[idx]))
             
-            for k in range(len(ind_list)):
-                temp2[k][4*i[0] - 2] = '|'
-                damier[ind_list[k]] = ''.join(temp2[k])
+            for k in enumerate(ind_list):#range(len(ind_list)):
+                temp[k][4*i[0] - 2] = '|'
+                damier[ind_list[k]] = ''.join(temp[k])
 
     # Formatage du damier
     for i in damier:
         chaine += i + '\n'
     
     return chaine
-
 
 def formater_jeu(état):
     """Formater la représentation graphique d'un jeu.
@@ -156,7 +152,7 @@ def formater_les_parties(parties):
 
     chaine = ''
     cter = 1
-    for i in test:
+    for i in parties:
         line = str(cter) + ' : ' + i['date'] + ', ' + i['joueurs'][0] + ' vs ' + i['joueurs'][1]
         if i['gagnant'] is None:
             line = ''.join([line, '\n'])
@@ -165,7 +161,6 @@ def formater_les_parties(parties):
         chaine += line
         cter += 1
     return chaine
-
 
 def récupérer_le_coup():
     """Récupérer le coup
@@ -179,21 +174,20 @@ def récupérer_le_coup():
         Donnez la position où appliquer ce coup (x,y): 2,6
     """
     while True:
-        type = input('Quel type de coup voulez-vous jouer? (\'D\', \'MH\', \'MV\') ?')
-        if (type == 'D') or (type == 'MH') or (type == 'MV'):
+        tp = input('Quel type de coup voulez-vous jouer? (\'D\', \'MH\', \'MV\') ?')
+        #if (tp == 'D') or (tp == 'MH') or (tp == 'MV'):
+        if (tp in ['D', 'MH', 'MV']):
             break
-        else:
-            print('Type erroné, veuillez entrer un type de coup valide.')
+        print('Type erroné, veuillez entrer un type de coup valide.')
 
     while True:
         position = input('Donnez la position où appliquer ce coup (x,y) :').split(',')
         if len(position) != 2:
             print('Position invalide, veuillez entrer une position valide.')
-        elif isinstance(int(position[0]), int) and isinstance(int(position[1]), int) and 1 <= int(position[0]) <= 9 and 1 <= int(position[1]) <= 9:
+        elif isinstance(int(position[0]), int) and isinstance(int(position[1]),
+            int) and 1 <= int(position[0]) <= 9 and 1 <= int(position[1]) <= 9:
             break
         else:
             print('Position invalide, veuillez entrer une position valide.')
 
-    return (type, [int(position[0]), int(position[1])])
-
-
+    return (tp, [int(position[0]), int(position[1])])

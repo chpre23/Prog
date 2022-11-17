@@ -8,11 +8,12 @@ from quoridor import (analyser_commande, formater_jeu, formater_les_parties,
 
 # Mettre ici votre secret récupérer depuis le site de PAX
 SECRET = "493162ca-e829-48c5-9e94-3d43b9497375"
-
+analyser_commande()
 
 if __name__ == "__main__":
     args = analyser_commande()
-    print(vars(args))
+    #print(args.idul)
+    #print(vars(args))
     if args.parties:
         parties = lister_parties(args.idul, SECRET)
         print(formater_les_parties(parties))
@@ -24,10 +25,14 @@ if __name__ == "__main__":
             # Demander au joueur de choisir son prochain coup
             type_coup, position = récupérer_le_coup()
             # Envoyez le coup au serveur
-            id_partie, état = jouer_coup(
+            try:
+                id_partie, état = jouer_coup(
                 id_partie,
                 type_coup,
                 position,
                 args.idul,
-                SECRET,
-            )
+                SECRET,)
+            except RuntimeError as RE:
+                print(RE)
+                print()
+                #pass

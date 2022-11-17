@@ -4,8 +4,13 @@ Ce module contient des tests unitaires pour le projet Quoridor.
 """
 from quoridor import formater_damier, formater_jeu, formater_légende
 
+
 # Réussi
 def test_formater_légende_pour_une_nouvelle_partie():
+    """Test 1
+
+    Teste la fonction formater_légende()
+    """
     joueurs = [
         {"nom": "Robin", "murs": 10, "pos": [5, 1]},
         {"nom": "Alfred", "murs": 10, "pos": [5, 9]},
@@ -23,6 +28,10 @@ def test_formater_légende_pour_une_nouvelle_partie():
 
 # Réussi
 def test_formater_damier_pour_une_nouvelle_partie():
+    """Test 2
+
+    Teste la fonction formatter_damier()
+    """
     joueurs = [
         {"nom": "Robin", "murs": 10, "pos": [5, 1]},
         {"nom": "Alfred", "murs": 10, "pos": [5, 9]},
@@ -60,6 +69,10 @@ def test_formater_damier_pour_une_nouvelle_partie():
 
 # Réussi
 def test_formater_jeu_pour_une_nouvelle_partie():
+    """Test 3
+
+    Teste la fonction formatter_jeu() pour une nouvelle partie
+    """
     état = {
         "joueurs": [
             {"nom": "Robin", "murs": 10, "pos": [5, 1]},
@@ -103,6 +116,10 @@ def test_formater_jeu_pour_une_nouvelle_partie():
 
 # Réussi
 def test_formater_jeu_pour_une_partie_avancée():
+    """Test 4
+
+    Teste la fonction formatter_jeu() pour une partie en cours
+    """
     état = {
         "joueurs": [
             {"nom": "Alfred", "murs": 7, "pos": [5, 5]},
@@ -143,8 +160,6 @@ def test_formater_jeu_pour_une_partie_avancée():
     résultat = formater_jeu(état)
 
     assert résultat == attendu, "Échec du test de formater_jeu pour une partie avancée"
-
-
 
 if __name__ == "__main__":
     test_formater_légende_pour_une_nouvelle_partie()
